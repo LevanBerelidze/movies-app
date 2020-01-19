@@ -1,5 +1,7 @@
 package com.levanb.movies_app.repository;
 
+import android.os.AsyncTask;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
@@ -21,8 +23,6 @@ import static com.levanb.movies_app.api.MovieService.API_KEY;
 import static com.levanb.movies_app.repository.datatype.Mapper.transform;
 
 public class MovieRepository {
-    private static MovieRepository instance;
-
     private MovieDatabase database;
     private MovieService service;
     private MutableLiveData<List<Movie>> popularMovies;
@@ -32,36 +32,15 @@ public class MovieRepository {
     public MovieRepository(MovieDatabase database, MovieService service) {
         this.database = database;
         this.service = service;
-        popularMovies = new MutableLiveData<>();
-        topRatedMovies = new MutableLiveData<>();
-        favoriteMovies = new MutableLiveData<>();
-
-        initialize();
     }
 
     public LiveData<List<Movie>> getPopularMovies() {
-        return popularMovies;
-    }
-
-    public LiveData<List<Movie>> getTopRatedMovies() {
-        return topRatedMovies;
-    }
-
-    public LiveData<List<Movie>> getFavoriteMovies() {
-        return favoriteMovies;
-    }
-
-    public void setFavorite(Movie movie, boolean isFavorite) {
-        // TODO asynchronously
-        if (isFavorite) {
-            database.favoriteMovieDao().insertMovie(transform(movie));
-        } else {
-            database.favoriteMovieDao().removeMovieFromFavorites(transform(movie));
+        if(popularMovies != null) {
+            return popularMovies;
         }
-    }
 
-    private void initialize() {
-        // load popular rated
+        popularMovies = new MutableLiveData<>();
+
         Call<MovieResponse> popularMoviesCall = service.getPopularMovies(API_KEY, 1);
         popularMoviesCall.enqueue(new Callback<MovieResponse>() {
             @Override
@@ -72,11 +51,20 @@ public class MovieRepository {
 
             @Override
             public void onFailure(Call<MovieResponse> call, Throwable t) {
-
+                // TODO
             }
         });
 
-        // load top rated
+        return popularMovies;
+    }
+
+    public LiveData<List<Movie>> getTopRatedMovies() {
+        if (topRatedMovies != null) {
+            return topRatedMovies;
+        }
+
+        topRatedMovies = new MutableLiveData<>();
+
         Call<MovieResponse> topRatedMoviesCall = service.getTopRatedMovies(API_KEY, 1);
         topRatedMoviesCall.enqueue(new Callback<MovieResponse>() {
             @Override
@@ -87,14 +75,33 @@ public class MovieRepository {
 
             @Override
             public void onFailure(Call<MovieResponse> call, Throwable t) {
-
+                // TODO
             }
         });
 
-        // load favorite movies
+        return topRatedMovies;
+    }
+
+    public LiveData<List<Movie>> getFavoriteMovies() {
+        if (favoriteMovies != null) {
+            return favoriteMovies;
+        }
+
+        favoriteMovies = new MutableLiveData<>();
         favoriteMovies = Transformations.map(
                 database.favoriteMovieDao().getAllMovies(),
                 Mapper::transformEntities
         );
+        return favoriteMovies;
+    }
+
+    public void setFavorite(Movie movie, boolean isFavorite) {
+        AsyncTask.execute(() -> {
+            if (isFavorite) {
+                database.favoriteMovieDao().insertMovie(transform(movie));
+            } else {
+                database.favoriteMovieDao().removeMovieFromFavorites(transform(movie));
+            }
+        });
     }
 }

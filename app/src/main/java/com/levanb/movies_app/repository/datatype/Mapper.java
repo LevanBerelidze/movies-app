@@ -22,30 +22,13 @@ public class Mapper {
         apiDateFormat = new SimpleDateFormat("yyyy-MM-dd");
     }
 
-    public static List<Movie> transformSchemas(List<MovieSchema> movieSchemas) {
-        List<Movie> result = new ArrayList<>();
-        for (MovieSchema schema : movieSchemas) {
-            result.add(transform(schema));
-        }
-        System.out.println(result);
-        return result;
-    }
-
-    public static List<Movie> transformEntities(List<FavoriteMovieEntity> entities) {
-        List<Movie> result = new ArrayList<>();
-        for (FavoriteMovieEntity entity : entities) {
-            result.add(transform(entity));
-        }
-        return result;
-    }
-
     public static Movie transform(MovieSchema movieSchema) {
         Movie movie = new Movie();
         movie.setId(movieSchema.getId());
         movie.setOriginalTitle(movieSchema.getOriginalTitle());
         movie.setOverview(movieSchema.getOverview());
-        movie.setPosterUrl(formatImageUrl(movieSchema.getPosterPath()));
-        movie.setRawPosterUrl(movie.getPosterUrl());
+        movie.setPosterUrl(getFullImageURL(movieSchema.getPosterPath()));
+        movie.setRawPosterUrl(movieSchema.getPosterPath());
         movie.setRating(movieSchema.getRating());
         movie.setTitle(movieSchema.getTitle());
         movie.setReleaseDate(parseDate(movieSchema.getReleaseDate()));
@@ -57,7 +40,7 @@ public class Mapper {
         movie.setId(entity.id);
         movie.setOriginalTitle(entity.originalTitle);
         movie.setOverview(entity.overview);
-        movie.setPosterUrl(formatImageUrl(entity.posterUrl));
+        movie.setPosterUrl(getFullImageURL(entity.posterUrl));
         movie.setRawPosterUrl(entity.posterUrl);
         movie.setRating(entity.rating);
         movie.setTitle(entity.title);
@@ -67,6 +50,7 @@ public class Mapper {
 
     public static FavoriteMovieEntity transform(Movie movie) {
         FavoriteMovieEntity entity = new FavoriteMovieEntity();
+        entity.id = movie.getId();
         entity.originalTitle = movie.getOriginalTitle();
         entity.overview = movie.getOverview();
         entity.posterUrl = movie.getRawPosterUrl();
@@ -74,6 +58,22 @@ public class Mapper {
         entity.title = movie.getTitle();
         entity.releaseDate = movie.getReleaseDate();
         return entity;
+    }
+
+    public static List<Movie> transformSchemas(List<MovieSchema> movieSchemas) {
+        List<Movie> result = new ArrayList<>();
+        for (MovieSchema schema : movieSchemas) {
+            result.add(transform(schema));
+        }
+        return result;
+    }
+
+    public static List<Movie> transformEntities(List<FavoriteMovieEntity> entities) {
+        List<Movie> result = new ArrayList<>();
+        for (FavoriteMovieEntity entity : entities) {
+            result.add(transform(entity));
+        }
+        return result;
     }
 
     private static Date parseDate(String date) {
@@ -85,7 +85,7 @@ public class Mapper {
         return null;
     }
 
-    private static String formatImageUrl(String posterUrl) {
+    private static String getFullImageURL(String posterUrl) {
         return posterUrl != null ?
                 String.format("%s%s?api_key=%s", POSTER_BASE_URL, posterUrl.substring(1), API_KEY) :
                 null;

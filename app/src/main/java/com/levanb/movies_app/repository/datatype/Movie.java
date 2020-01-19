@@ -1,5 +1,7 @@
 package com.levanb.movies_app.repository.datatype;
 
+import androidx.annotation.Nullable;
+
 import java.util.Date;
 
 public class Movie {
@@ -76,6 +78,19 @@ public class Movie {
 
     public String getRawPosterUrl() {
         return rawPosterUrl;
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.valueOf(this.id).hashCode();
+    }
+
+    @Override
+    public boolean equals(@Nullable Object that) {
+        if (!(that instanceof Movie)) {
+            return false;
+        }
+        return this.id == ((Movie) that).id;
     }
 
     @Override

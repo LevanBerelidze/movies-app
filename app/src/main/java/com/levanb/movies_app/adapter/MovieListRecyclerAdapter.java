@@ -12,27 +12,38 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.levanb.movies_app.R;
+import com.levanb.movies_app.listener.MovieFavoriteStatusListener;
 import com.levanb.movies_app.repository.datatype.Movie;
+import com.like.LikeButton;
+import com.like.OnLikeListener;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class MovieListRecyclerAdapter extends RecyclerView.Adapter<MovieListRecyclerAdapter.MovieItemViewHolder> {
-    private List<Movie> movies;
     private Context context;
+    private MovieFavoriteStatusListener favoriteStatusListener;
 
-    public class MovieItemViewHolder extends RecyclerView.ViewHolder {
+    private List<Movie> movies;
+    private Set<Movie> favorites;
+
+    class MovieItemViewHolder extends RecyclerView.ViewHolder {
         TextView title;
         ImageView poster;
+        LikeButton favoriteButton;
 
-        public MovieItemViewHolder(@NonNull View itemView) {
+        MovieItemViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.text_view_title);
             poster = itemView.findViewById(R.id.image_view_poster);
+            favoriteButton = itemView.findViewById(R.id.button_favorite);
         }
     }
 
-    public MovieListRecyclerAdapter(Context context, List<Movie> movies) {
+    public MovieListRecyclerAdapter(Context context, List<Movie> movies, Set<Movie> favorites) {
         this.movies = movies;
+        this.favorites = favorites;
         this.context = context;
     }
 
@@ -48,10 +59,27 @@ public class MovieListRecyclerAdapter extends RecyclerView.Adapter<MovieListRecy
         Movie currentMovie = movies.get(position);
         holder.title.setText(currentMovie.getTitle());
         String posterUrl = currentMovie.getPosterUrl();
-        System.out.println("url: " + posterUrl);
         if (posterUrl != null) {
             Glide.with(context).asBitmap().load(currentMovie.getPosterUrl()).into(holder.poster);
         }
+        holder.favoriteButton.setLiked(favorites.contains(currentMovie));
+        holder.favoriteButton.setOnLikeListener(new OnLikeListener() {
+            @Override
+            public void liked(LikeButton likeButton) {
+                Movie movie = movies.get(position);
+                MovieListRecyclerAdapter.this
+                        .favoriteStatusListener
+                        .onMovieFavoriteStatusChanged(movie, true);
+            }
+
+            @Override
+            public void unLiked(LikeButton likeButton) {
+                Movie movie = movies.get(position);
+                MovieListRecyclerAdapter.this
+                        .favoriteStatusListener
+                        .onMovieFavoriteStatusChanged(movie, false);
+            }
+        });
     }
 
     @Override
@@ -59,7 +87,33 @@ public class MovieListRecyclerAdapter extends RecyclerView.Adapter<MovieListRecy
         return movies.size();
     }
 
-    public void updateItems(List<Movie> movies) {
+    public void setItems(List<Movie> movies) {
         this.movies = movies;
+    }
+
+    /**
+     * @param favorites set of items that are marked as favorites
+     * @return indices of modified items
+     */
+    public Iterable<Integer> setFavorites(Set<Movie> favorites) {
+        // change field
+        Set<Movie> currentFavorites = this.favorites;
+        this.favorites = favorites;
+
+        // find changed indices
+        List<Integer> indicesOfModifiedItems = new ArrayList<>();
+
+        for (int i = 0; i < movies.size(); i++) {
+            Movie movie = movies.get(i);
+            if (currentFavorites.contains(movie) ^ favorites.contains(movie)) {
+                indicesOfModifiedItems.add(i);
+            }
+        }
+
+        return indicesOfModifiedItems;
+    }
+
+    public void setFavoriteStatusListener(MovieFavoriteStatusListener favoriteStatusListener) {
+        this.favoriteStatusListener = favoriteStatusListener;
     }
 }

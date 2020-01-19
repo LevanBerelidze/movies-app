@@ -6,9 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".activity.MovieListActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view_movies"
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/view_pager_movies"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_layout_movies"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </androidx.viewpager.widget.ViewPager>
 
 </LinearLayout>

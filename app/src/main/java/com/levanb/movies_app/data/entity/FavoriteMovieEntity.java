@@ -7,7 +7,7 @@ import java.util.Date;
 
 @Entity(tableName = "favorite_movies")
 public class FavoriteMovieEntity {
-    @PrimaryKey
+    @PrimaryKey()
     public int id;
 
     public String title;
