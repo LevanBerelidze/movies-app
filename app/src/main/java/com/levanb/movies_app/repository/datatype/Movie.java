@@ -2,9 +2,10 @@ package com.levanb.movies_app.repository.datatype;
 
 import androidx.annotation.Nullable;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Movie {
+public class Movie implements Serializable {
     private int id;
     private String title;
     private String posterUrl;

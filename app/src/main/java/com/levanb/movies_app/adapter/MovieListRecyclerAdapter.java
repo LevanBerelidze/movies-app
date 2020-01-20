@@ -25,20 +25,31 @@ import java.util.Set;
 public class MovieListRecyclerAdapter extends RecyclerView.Adapter<MovieListRecyclerAdapter.MovieItemViewHolder> {
     private Context context;
     private MovieFavoriteStatusListener favoriteStatusListener;
+    private MovieSelectionListener movieSelectionListener;
 
     private List<Movie> movies;
     private Set<Movie> favorites;
 
-    class MovieItemViewHolder extends RecyclerView.ViewHolder {
+    public interface MovieSelectionListener {
+        void onMovieSelected(Movie movie, MovieItemViewHolder holder);
+    }
+
+    public class MovieItemViewHolder extends RecyclerView.ViewHolder {
         TextView title;
         ImageView poster;
         LikeButton favoriteButton;
+        View itemView;
 
         MovieItemViewHolder(@NonNull View itemView) {
             super(itemView);
+            this.itemView = itemView;
             title = itemView.findViewById(R.id.text_view_title);
             poster = itemView.findViewById(R.id.image_view_poster);
             favoriteButton = itemView.findViewById(R.id.button_favorite);
+        }
+
+        public ImageView getPoster() {
+            return poster;
         }
     }
 
@@ -94,6 +105,13 @@ public class MovieListRecyclerAdapter extends RecyclerView.Adapter<MovieListRecy
                         .onMovieFavoriteStatusChanged(movie, false);
             }
         });
+
+        // listen to item selection
+        holder.itemView.setOnClickListener(view -> {
+            if (movieSelectionListener != null) {
+                movieSelectionListener.onMovieSelected(currentMovie, holder);
+            }
+        });
     }
 
     @Override
@@ -129,5 +147,9 @@ public class MovieListRecyclerAdapter extends RecyclerView.Adapter<MovieListRecy
 
     public void setFavoriteStatusListener(MovieFavoriteStatusListener favoriteStatusListener) {
         this.favoriteStatusListener = favoriteStatusListener;
+    }
+
+    public void setMovieSelectionListener(MovieSelectionListener movieSelectionListener) {
+        this.movieSelectionListener = movieSelectionListener;
     }
 }

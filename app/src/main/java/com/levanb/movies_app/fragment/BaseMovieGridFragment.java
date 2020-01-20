@@ -8,22 +8,26 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.transition.AutoTransition;
+import androidx.transition.Fade;
 
 import com.levanb.movies_app.R;
 import com.levanb.movies_app.adapter.MovieListRecyclerAdapter;
 import com.levanb.movies_app.decoration.ShadowMarginItemDecoration;
 import com.levanb.movies_app.listener.MovieFavoriteStatusListener;
+import com.levanb.movies_app.repository.datatype.Movie;
 import com.levanb.movies_app.viewmodel.MovieListViewModel;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public abstract class BaseMovieGridFragment extends Fragment {
+public abstract class BaseMovieGridFragment extends Fragment implements MovieListRecyclerAdapter.MovieSelectionListener {
     MovieListRecyclerAdapter adapter;
     MovieListViewModel viewModel;
 
@@ -36,19 +40,21 @@ public abstract class BaseMovieGridFragment extends Fragment {
         @Nullable ViewGroup container,
         @Nullable Bundle savedInstanceState
     ) {
-        ViewGroup contentView = (ViewGroup)
-                inflater.inflate(R.layout.fragment_movie_grid, container, false);
+        return inflater.inflate(R.layout.fragment_movie_grid, container, false);
+    }
 
-        // initialize UI elements
+    @Override
+    public void onViewCreated(@NonNull View contentView, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(contentView, savedInstanceState);
+
         Context context = getContext();
         RecyclerView recyclerView = contentView.findViewById(R.id.recycler_view_movies);
         recyclerView.addItemDecoration(new ShadowMarginItemDecoration(16));
         adapter = new MovieListRecyclerAdapter(context, new ArrayList<>(), new HashSet<>());
         adapter.setFavoriteStatusListener(listener);
+        adapter.setMovieSelectionListener(this);
         recyclerView.setLayoutManager(new GridLayoutManager(context, 2));
         recyclerView.setAdapter(adapter);
-
-        return contentView;
     }
 
     @Override
@@ -72,5 +78,28 @@ public abstract class BaseMovieGridFragment extends Fragment {
         if (adapter != null) {
             adapter.setFavoriteStatusListener(listener);
         }
+    }
+
+    @Override
+    public void onMovieSelected(Movie movie, MovieListRecyclerAdapter.MovieItemViewHolder holder) {
+        MovieDetailsFragment detailsFragment = MovieDetailsFragment.newInstance(movie);
+
+        // setup shared transition
+        detailsFragment.setSharedElementEnterTransition(new AutoTransition());
+        detailsFragment.setEnterTransition(new Fade());
+        setExitTransition(new Fade());
+        detailsFragment.setSharedElementReturnTransition(new AutoTransition());
+
+        FragmentActivity activity = getActivity();
+        assert activity != null;
+
+        String transitionName = "poster" + movie.getId();
+        ViewCompat.setTransitionName(holder.getPoster(), transitionName);
+        activity.getSupportFragmentManager()
+                .beginTransaction()
+                .addSharedElement(holder.getPoster(), transitionName)
+                .replace(R.id.container, detailsFragment)
+                .addToBackStack(null)
+                .commit();
     }
 }
