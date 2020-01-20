@@ -43,7 +43,7 @@ public class MovieListRecyclerAdapter extends RecyclerView.Adapter<MovieListRecy
         MovieItemViewHolder(@NonNull View itemView) {
             super(itemView);
             this.itemView = itemView;
-            title = itemView.findViewById(R.id.text_view_title);
+            title = itemView.findViewById(R.id.text_view_original_title);
             poster = itemView.findViewById(R.id.image_view_poster);
             favoriteButton = itemView.findViewById(R.id.button_favorite);
         }

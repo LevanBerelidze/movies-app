@@ -21,7 +21,7 @@ public class MovieSchema {
     @SerializedName("title")
     private String title;
 
-    @SerializedName("popularity")
+    @SerializedName("vote_average")
     private Double rating;
 
     @SerializedName("backdrop_path")

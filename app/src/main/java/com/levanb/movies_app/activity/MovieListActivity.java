@@ -1,6 +1,6 @@
 package com.levanb.movies_app.activity;
 
-import androidx.fragment.app.FragmentActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
@@ -16,7 +16,7 @@ import com.levanb.movies_app.viewmodel.MovieListViewModelFactory;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MovieListActivity extends FragmentActivity {
+public class MovieListActivity extends AppCompatActivity {
     public MovieListViewModel viewModel;
 
     @Override
