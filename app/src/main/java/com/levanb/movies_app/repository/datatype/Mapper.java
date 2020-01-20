@@ -32,6 +32,8 @@ public class Mapper {
         movie.setRating(movieSchema.getRating());
         movie.setTitle(movieSchema.getTitle());
         movie.setReleaseDate(parseDate(movieSchema.getReleaseDate()));
+        movie.setRawBackdropUrl(movieSchema.getBackdropPath());
+        movie.setBackdropUrl(getFullImageURL(movieSchema.getBackdropPath()));
         return movie;
     }
 
@@ -45,6 +47,8 @@ public class Mapper {
         movie.setRating(entity.rating);
         movie.setTitle(entity.title);
         movie.setReleaseDate(entity.releaseDate);
+        movie.setRawBackdropUrl(entity.backdropUrl);
+        movie.setBackdropUrl(getFullImageURL(entity.backdropUrl));
         return movie;
     }
 
@@ -57,6 +61,7 @@ public class Mapper {
         entity.rating = movie.getRating();
         entity.title = movie.getTitle();
         entity.releaseDate = movie.getReleaseDate();
+        entity.backdropUrl = movie.getRawBackdropUrl();
         return entity;
     }
 

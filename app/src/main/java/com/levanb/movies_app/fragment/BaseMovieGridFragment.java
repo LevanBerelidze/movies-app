@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.transition.AutoTransition;
 import androidx.transition.Explode;
+import androidx.transition.Fade;
 import androidx.transition.Slide;
 
 import com.levanb.movies_app.R;
@@ -23,6 +24,7 @@ import com.levanb.movies_app.adapter.MovieListRecyclerAdapter;
 import com.levanb.movies_app.decoration.ShadowMarginItemDecoration;
 import com.levanb.movies_app.listener.MovieFavoriteStatusListener;
 import com.levanb.movies_app.repository.datatype.Movie;
+import com.levanb.movies_app.transition.DetailsTransition;
 import com.levanb.movies_app.viewmodel.MovieListViewModel;
 
 import java.util.ArrayList;
@@ -88,7 +90,7 @@ public abstract class BaseMovieGridFragment extends Fragment implements MovieLis
         // setup shared transition
         detailsFragment.setSharedElementEnterTransition(new AutoTransition());
         detailsFragment.setEnterTransition(new Explode());
-        setExitTransition(new Slide());
+        setExitTransition(new Fade());
         detailsFragment.setSharedElementReturnTransition(new AutoTransition());
 
         FragmentActivity activity = getActivity();

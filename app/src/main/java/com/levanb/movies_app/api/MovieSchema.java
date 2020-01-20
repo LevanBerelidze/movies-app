@@ -24,6 +24,9 @@ public class MovieSchema {
     @SerializedName("popularity")
     private Double rating;
 
+    @SerializedName("backdrop_path")
+    private String backdropPath;
+
     public MovieSchema(
         String posterPath,
         String overview,
@@ -31,7 +34,8 @@ public class MovieSchema {
         Integer id,
         String originalTitle,
         String title,
-        Double popularity
+        Double popularity,
+        String backdropPath
     ) {
         this.posterPath = posterPath;
         this.overview = overview;
@@ -40,6 +44,7 @@ public class MovieSchema {
         this.originalTitle = originalTitle;
         this.title = title;
         this.rating = popularity;
+        this.backdropPath = backdropPath;
     }
 
     public Integer getId() {
@@ -96,5 +101,13 @@ public class MovieSchema {
 
     public void setRating(Double rating) {
         this.rating = rating;
+    }
+
+    public String getBackdropPath() {
+        return backdropPath;
+    }
+
+    public void setBackdropPath(String backdropPath) {
+        this.backdropPath = backdropPath;
     }
 }

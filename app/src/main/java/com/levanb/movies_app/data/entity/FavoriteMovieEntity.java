@@ -14,6 +14,8 @@ public class FavoriteMovieEntity {
 
     public String posterUrl;
 
+    public String backdropUrl;
+
     public String overview;
 
     public String originalTitle;

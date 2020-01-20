@@ -10,6 +10,8 @@ public class Movie implements Serializable {
     private String title;
     private String posterUrl;
     private String rawPosterUrl;
+    private String backdropUrl;
+    private String rawBackdropUrl;
     private String overview;
     private String originalTitle;
     private double rating;
@@ -79,6 +81,22 @@ public class Movie implements Serializable {
 
     public String getRawPosterUrl() {
         return rawPosterUrl;
+    }
+
+    public String getBackdropUrl() {
+        return backdropUrl;
+    }
+
+    public String getRawBackdropUrl() {
+        return rawBackdropUrl;
+    }
+
+    public void setBackdropUrl(String backdropUrl) {
+        this.backdropUrl = backdropUrl;
+    }
+
+    public void setRawBackdropUrl(String rawBackdropUrl) {
+        this.rawBackdropUrl = rawBackdropUrl;
     }
 
     @Override
