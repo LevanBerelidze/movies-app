@@ -1,22 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
+    android:id="@+id/frame_layout_container"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.MovieListActivity">
-
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/view_pager_movies"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tab_layout_movies"
-            android:elevation="12dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-    </androidx.viewpager.widget.ViewPager>
-
-</FrameLayout>
+    tools:context=".activity.MovieListActivity" />

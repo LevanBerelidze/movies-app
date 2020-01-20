@@ -15,7 +15,8 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.transition.AutoTransition;
-import androidx.transition.Fade;
+import androidx.transition.Explode;
+import androidx.transition.Slide;
 
 import com.levanb.movies_app.R;
 import com.levanb.movies_app.adapter.MovieListRecyclerAdapter;
@@ -86,8 +87,8 @@ public abstract class BaseMovieGridFragment extends Fragment implements MovieLis
 
         // setup shared transition
         detailsFragment.setSharedElementEnterTransition(new AutoTransition());
-        detailsFragment.setEnterTransition(new Fade());
-        setExitTransition(new Fade());
+        detailsFragment.setEnterTransition(new Explode());
+        setExitTransition(new Slide());
         detailsFragment.setSharedElementReturnTransition(new AutoTransition());
 
         FragmentActivity activity = getActivity();
@@ -97,8 +98,8 @@ public abstract class BaseMovieGridFragment extends Fragment implements MovieLis
         ViewCompat.setTransitionName(holder.getPoster(), transitionName);
         activity.getSupportFragmentManager()
                 .beginTransaction()
-                .addSharedElement(holder.getPoster(), transitionName)
-                .replace(R.id.container, detailsFragment)
+                .addSharedElement(holder.getPoster(), holder.getPoster().getTransitionName())
+                .replace(R.id.frame_layout_container, detailsFragment)
                 .addToBackStack(null)
                 .commit();
     }

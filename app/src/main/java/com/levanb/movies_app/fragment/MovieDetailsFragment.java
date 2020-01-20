@@ -1,5 +1,6 @@
 package com.levanb.movies_app.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,13 +12,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.levanb.movies_app.R;
 import com.levanb.movies_app.repository.datatype.Movie;
+import com.levanb.movies_app.viewmodel.MovieListViewModel;
 
 public class MovieDetailsFragment extends Fragment {
+    private MovieListViewModel viewModel;
+
     public static MovieDetailsFragment newInstance(Movie movie) {
         Bundle args = new Bundle();
         args.putSerializable("movie", movie);
@@ -26,6 +32,16 @@ public class MovieDetailsFragment extends Fragment {
         fragment.setArguments(args);
 
         return fragment;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        FragmentActivity activity = this.getActivity();
+        if (activity == null) {
+            throw new IllegalStateException();
+        }
+        viewModel = ViewModelProviders.of(activity).get(MovieListViewModel.class);
     }
 
     @Nullable
@@ -38,8 +54,9 @@ public class MovieDetailsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        assert savedInstanceState != null;
-        Movie movie = (Movie) savedInstanceState.getSerializable("movie");
+        Bundle args = getArguments();
+        assert args != null;
+        Movie movie = (Movie) args.getSerializable("movie");
         assert movie != null;
 
         ImageView poster = view.findViewById(R.id.image_view_movie_poster);
