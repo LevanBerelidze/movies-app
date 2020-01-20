@@ -45,4 +45,10 @@ public class MovieListActivity extends AppCompatActivity {
                     .commit();
         }
     }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        getSupportFragmentManager().popBackStack();
+        return true;
+    }
 }
