@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.levanb.movies_app.R;
 import com.levanb.movies_app.adapter.MovieListRecyclerAdapter;
+import com.levanb.movies_app.decoration.ShadowMarginItemDecoration;
 import com.levanb.movies_app.listener.MovieFavoriteStatusListener;
 import com.levanb.movies_app.viewmodel.MovieListViewModel;
 
@@ -24,8 +25,9 @@ import java.util.HashSet;
 
 public abstract class BaseMovieGridFragment extends Fragment {
     MovieListRecyclerAdapter adapter;
-    MovieFavoriteStatusListener listener;
     MovieListViewModel viewModel;
+
+    private MovieFavoriteStatusListener listener;
 
     @Nullable
     @Override
@@ -40,9 +42,10 @@ public abstract class BaseMovieGridFragment extends Fragment {
         // initialize UI elements
         Context context = getContext();
         RecyclerView recyclerView = contentView.findViewById(R.id.recycler_view_movies);
+        recyclerView.addItemDecoration(new ShadowMarginItemDecoration(16));
         adapter = new MovieListRecyclerAdapter(context, new ArrayList<>(), new HashSet<>());
         adapter.setFavoriteStatusListener(listener);
-        recyclerView.setLayoutManager(new GridLayoutManager(context, 3));
+        recyclerView.setLayoutManager(new GridLayoutManager(context, 2));
         recyclerView.setAdapter(adapter);
 
         return contentView;

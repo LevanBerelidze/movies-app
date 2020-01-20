@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.levanb.movies_app.R;
 import com.levanb.movies_app.listener.MovieFavoriteStatusListener;
 import com.levanb.movies_app.repository.datatype.Movie;
@@ -58,11 +59,24 @@ public class MovieListRecyclerAdapter extends RecyclerView.Adapter<MovieListRecy
     public void onBindViewHolder(@NonNull MovieItemViewHolder holder, int position) {
         Movie currentMovie = movies.get(position);
         holder.title.setText(currentMovie.getTitle());
+
+        // fetch and set image
         String posterUrl = currentMovie.getPosterUrl();
         if (posterUrl != null) {
-            Glide.with(context).asBitmap().load(currentMovie.getPosterUrl()).into(holder.poster);
+            Glide.with(context)
+                    .asBitmap()
+                    .load(currentMovie.getPosterUrl())
+                    .apply(new RequestOptions().placeholder(R.drawable.image_placeholder))
+                    .into(holder.poster);
         }
-        holder.favoriteButton.setLiked(favorites.contains(currentMovie));
+
+        // mark favorite, if applicable
+        boolean isFavorite = favorites.contains(currentMovie);
+        if (holder.favoriteButton.isLiked() != isFavorite) {
+            holder.favoriteButton.setLiked(isFavorite);
+        }
+
+        // listen to favorite button clicks
         holder.favoriteButton.setOnLikeListener(new OnLikeListener() {
             @Override
             public void liked(LikeButton likeButton) {
