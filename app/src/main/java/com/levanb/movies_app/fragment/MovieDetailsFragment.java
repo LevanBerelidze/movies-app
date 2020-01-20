@@ -137,8 +137,6 @@ public class MovieDetailsFragment extends Fragment {
                     .into(poster);
         }
 
-
-
         // set details to views
         title.setText(movie.getOriginalTitle());
         releaseDate.setText(formatReleaseDate(movie.getReleaseDate()));
