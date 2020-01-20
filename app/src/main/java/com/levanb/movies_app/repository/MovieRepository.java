@@ -28,10 +28,24 @@ public class MovieRepository {
     private MutableLiveData<List<Movie>> popularMovies;
     private MutableLiveData<List<Movie>> topRatedMovies;
     private LiveData<List<Movie>> favoriteMovies;
+    private boolean isConnected;
 
     public MovieRepository(MovieDatabase database, MovieService service) {
         this.database = database;
         this.service = service;
+    }
+
+    public void onNetworkStateChanged(boolean isConnected) {
+        if (!this.isConnected && isConnected) {
+            // lazily load data
+            if (popularMovies != null) {
+                loadPopularMovies();
+            }
+            if (topRatedMovies != null) {
+                loadTopRatedMovies();
+            }
+        }
+        this.isConnected = isConnected;
     }
 
     public LiveData<List<Movie>> getPopularMovies() {
@@ -40,7 +54,11 @@ public class MovieRepository {
         }
 
         popularMovies = new MutableLiveData<>();
+        loadPopularMovies();
+        return popularMovies;
+    }
 
+    private void loadPopularMovies() {
         Call<MovieResponse> popularMoviesCall = service.getPopularMovies(API_KEY, 1);
         popularMoviesCall.enqueue(new Callback<MovieResponse>() {
             @Override
@@ -57,8 +75,6 @@ public class MovieRepository {
                 // TODO
             }
         });
-
-        return popularMovies;
     }
 
     public LiveData<List<Movie>> getTopRatedMovies() {
@@ -67,7 +83,11 @@ public class MovieRepository {
         }
 
         topRatedMovies = new MutableLiveData<>();
+        loadTopRatedMovies();
+        return topRatedMovies;
+    }
 
+    private void loadTopRatedMovies() {
         Call<MovieResponse> topRatedMoviesCall = service.getTopRatedMovies(API_KEY, 1);
         topRatedMoviesCall.enqueue(new Callback<MovieResponse>() {
             @Override
@@ -84,8 +104,6 @@ public class MovieRepository {
                 // TODO
             }
         });
-
-        return topRatedMovies;
     }
 
     public LiveData<List<Movie>> getFavoriteMovies() {

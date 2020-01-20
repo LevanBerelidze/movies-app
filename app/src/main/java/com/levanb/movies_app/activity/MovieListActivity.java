@@ -1,8 +1,14 @@
 package com.levanb.movies_app.activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkRequest;
 import android.os.Bundle;
 
 import com.levanb.movies_app.R;
@@ -37,6 +43,21 @@ public class MovieListActivity extends AppCompatActivity {
                 .of(this, factory)
                 .get(MovieListViewModel.class);
 
+        // register network callback
+        registerNetworkCallback(new ConnectivityManager.NetworkCallback() {
+            @Override
+            public void onAvailable(@NonNull Network network) {
+                super.onAvailable(network);
+                repository.onNetworkStateChanged(true);
+            }
+
+            @Override
+            public void onLost(@NonNull Network network) {
+                super.onLost(network);
+                repository.onNetworkStateChanged(false);
+            }
+        });
+
         // start fragment
         if (savedInstanceState == null) {
             getSupportFragmentManager()
@@ -50,5 +71,18 @@ public class MovieListActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         getSupportFragmentManager().popBackStack();
         return true;
+    }
+
+    private void registerNetworkCallback(ConnectivityManager.NetworkCallback networkCallback) {
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkRequest networkRequest = new NetworkRequest.Builder()
+                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+                .build();
+
+        if (connectivityManager != null) {
+            connectivityManager.registerNetworkCallback(networkRequest, networkCallback);
+        }
     }
 }
