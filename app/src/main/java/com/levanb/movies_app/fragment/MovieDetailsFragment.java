@@ -146,16 +146,18 @@ public class MovieDetailsFragment extends Fragment {
                         @Override
                         public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
                             Activity parent = getActivity();
-                            assert parent != null;
-                            parent.startPostponedEnterTransition();
+                            if (parent != null) {
+                                parent.startPostponedEnterTransition();
+                            }
                             return false;
                         }
 
                         @Override
                         public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
                             Activity parent = getActivity();
-                            assert parent != null;
-                            parent.startPostponedEnterTransition();
+                            if (parent != null) {
+                                parent.startPostponedEnterTransition();
+                            }
                             return false;
                         }
                     })

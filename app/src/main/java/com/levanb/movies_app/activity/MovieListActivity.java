@@ -10,6 +10,7 @@ import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.net.NetworkRequest;
+import android.os.Build;
 import android.os.Bundle;
 
 import com.levanb.movies_app.R;
@@ -109,6 +110,10 @@ public class MovieListActivity extends AppCompatActivity {
 
     private boolean isNetworkAvailable() {
         // TODO find another way to check connectivity
+        if (Build.VERSION.SDK_INT >= 29) {
+            // avoid evaluating the deprecated code
+            return true;
+        }
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = null;
