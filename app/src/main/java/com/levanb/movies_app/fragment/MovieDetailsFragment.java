@@ -3,7 +3,6 @@ package com.levanb.movies_app.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +16,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -153,14 +151,17 @@ public class MovieDetailsFragment extends Fragment {
         assert isFavorite.getValue() != null; // "false" value is posted in constructor
         FloatingActionButton favoriteButton = view.findViewById(R.id.fab_favorite);
         isFavorite.observe(this, value -> {
+            // TODO: consider removing hide() and show() calls
+            // reason: possible bug in library
+            favoriteButton.hide();
             int resId = value ? R.drawable.ic_heart_filled : R.drawable.ic_heart_empty;
-            Drawable fabIcon = ContextCompat.getDrawable(activity, resId);
-            favoriteButton.setImageDrawable(fabIcon);
+            favoriteButton.setImageResource(resId);
+            favoriteButton.show();
         });
-        favoriteButton.setOnClickListener(v -> viewModel.setFavorite(movie, !isFavorite.getValue()));
+        favoriteButton.setOnClickListener(v -> {
+            viewModel.setFavorite(movie, !isFavorite.getValue());
+        });
     }
-
-
 
     private static String formatReleaseDate(Date releaseDate) {
         Calendar calendar = Calendar.getInstance();
