@@ -45,8 +45,11 @@ public class MovieRepository {
         popularMoviesCall.enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
-                List<MovieSchema> movies = response.body().getResults();
-                popularMovies.postValue(Mapper.transformSchemas(movies));
+                MovieResponse body = response.body();
+                if (body != null) {
+                    List<MovieSchema> movies = body.getResults();
+                    popularMovies.postValue(Mapper.transformSchemas(movies));
+                }
             }
 
             @Override
@@ -69,8 +72,11 @@ public class MovieRepository {
         topRatedMoviesCall.enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
-                List<MovieSchema> movies = response.body().getResults();
-                topRatedMovies.postValue(Mapper.transformSchemas(movies));
+                MovieResponse body = response.body();
+                if (body != null) {
+                    List<MovieSchema> movies = body.getResults();
+                    topRatedMovies.postValue(Mapper.transformSchemas(movies));
+                }
             }
 
             @Override
