@@ -26,12 +26,17 @@ public class MovieListRecyclerAdapter extends RecyclerView.Adapter<MovieListRecy
     private Context context;
     private MovieFavoriteStatusListener favoriteStatusListener;
     private MovieSelectionListener movieSelectionListener;
+    private ItemCountListener countListener;
 
     private List<Movie> movies;
     private Set<Movie> favorites;
 
     public interface MovieSelectionListener {
         void onMovieSelected(Movie movie, MovieItemViewHolder holder);
+    }
+
+    public interface ItemCountListener {
+        void onItemCountChanged(int count);
     }
 
     public class MovieItemViewHolder extends RecyclerView.ViewHolder {
@@ -123,6 +128,9 @@ public class MovieListRecyclerAdapter extends RecyclerView.Adapter<MovieListRecy
 
     public void setItems(List<Movie> movies) {
         this.movies = movies;
+        if (countListener != null) {
+            countListener.onItemCountChanged(movies.size());
+        }
     }
 
     /**
@@ -153,5 +161,9 @@ public class MovieListRecyclerAdapter extends RecyclerView.Adapter<MovieListRecy
 
     public void setMovieSelectionListener(MovieSelectionListener movieSelectionListener) {
         this.movieSelectionListener = movieSelectionListener;
+    }
+
+    public void setCountListener(ItemCountListener countListener) {
+        this.countListener = countListener;
     }
 }

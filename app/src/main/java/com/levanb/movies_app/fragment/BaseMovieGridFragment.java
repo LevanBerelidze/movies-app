@@ -24,15 +24,17 @@ import com.levanb.movies_app.adapter.MovieListRecyclerAdapter;
 import com.levanb.movies_app.decoration.ShadowMarginItemDecoration;
 import com.levanb.movies_app.listener.MovieFavoriteStatusListener;
 import com.levanb.movies_app.repository.datatype.Movie;
-import com.levanb.movies_app.transition.DetailsTransition;
+
 import com.levanb.movies_app.viewmodel.MovieListViewModel;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public abstract class BaseMovieGridFragment extends Fragment implements MovieListRecyclerAdapter.MovieSelectionListener {
+public abstract class BaseMovieGridFragment extends Fragment
+        implements MovieListRecyclerAdapter.MovieSelectionListener, MovieListRecyclerAdapter.ItemCountListener {
     MovieListRecyclerAdapter adapter;
     MovieListViewModel viewModel;
+    private View emptyMoviesPlaceholder;
 
     private MovieFavoriteStatusListener listener;
 
@@ -53,9 +55,15 @@ public abstract class BaseMovieGridFragment extends Fragment implements MovieLis
         Context context = getContext();
         RecyclerView recyclerView = contentView.findViewById(R.id.recycler_view_movies);
         recyclerView.addItemDecoration(new ShadowMarginItemDecoration(16));
+        emptyMoviesPlaceholder = contentView.findViewById(R.id.text_view_empty);
+        emptyMoviesPlaceholder.setVisibility(View.VISIBLE);
         adapter = new MovieListRecyclerAdapter(context, new ArrayList<>(), new HashSet<>());
+
+        // setup listeners
         adapter.setFavoriteStatusListener(listener);
+        adapter.setCountListener(this);
         adapter.setMovieSelectionListener(this);
+
         recyclerView.setLayoutManager(new GridLayoutManager(context, 2));
         recyclerView.setAdapter(adapter);
     }
@@ -104,5 +112,14 @@ public abstract class BaseMovieGridFragment extends Fragment implements MovieLis
                 .replace(R.id.layout_container, detailsFragment)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    @Override
+    public void onItemCountChanged(int count) {
+        if (count > 0) {
+            emptyMoviesPlaceholder.setVisibility(View.GONE);
+        } else {
+            emptyMoviesPlaceholder.setVisibility(View.VISIBLE);
+        }
     }
 }

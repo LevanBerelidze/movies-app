@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MoviesApp</string>
+    <string name="empty_recycler_view_prompt">No movies</string>
 </resources>
