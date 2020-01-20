@@ -112,7 +112,6 @@ public class MovieDetailsFragment extends Fragment {
 
         // set poster image
         String backdropUrl = movie.getBackdropUrl();
-        System.out.println(backdropUrl);
         if (backdropUrl != null) {
             Glide.with(view.getContext())
                     .asBitmap()
