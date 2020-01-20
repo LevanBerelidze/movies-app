@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,6 +16,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.levanb.movies_app.R;
 import com.levanb.movies_app.adapter.MoviePagerAdapter;
@@ -25,6 +27,7 @@ import com.levanb.movies_app.viewmodel.MovieListViewModel;
 public class MoviePagerFragment extends Fragment
         implements MovieFavoriteStatusListener, MoviePagerAdapter.PageInfoProvider {
     private MovieListViewModel viewModel;
+    private Snackbar snackbar;
 
     @Nullable
     @Override
@@ -47,6 +50,16 @@ public class MoviePagerFragment extends Fragment
                 this
         ));
         tabLayout.setupWithViewPager(pager);
+
+        // handle connection loss
+        viewModel.isConnectedToNetwork().observe(this, isConnected -> {
+            if (isConnected != null && !isConnected) {
+                snackbar = Snackbar.make(contentView, "Network is not available!", Snackbar.LENGTH_INDEFINITE);
+                snackbar.show();
+            } else if (snackbar != null) {
+                snackbar.dismiss();
+            }
+        });
     }
 
     @Override

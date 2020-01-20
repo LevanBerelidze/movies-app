@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.transition.AutoTransition;
 import androidx.transition.Explode;
 import androidx.transition.Fade;
-import androidx.transition.Slide;
 
 import com.levanb.movies_app.R;
 import com.levanb.movies_app.adapter.MovieListRecyclerAdapter;

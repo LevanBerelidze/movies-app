@@ -10,6 +10,7 @@ import com.levanb.movies_app.api.MovieResponse;
 import com.levanb.movies_app.api.MovieSchema;
 import com.levanb.movies_app.api.MovieService;
 import com.levanb.movies_app.data.MovieDatabase;
+import com.levanb.movies_app.listener.NetworkStateListener;
 import com.levanb.movies_app.repository.datatype.Mapper;
 import com.levanb.movies_app.repository.datatype.Movie;
 
@@ -22,7 +23,7 @@ import retrofit2.Response;
 import static com.levanb.movies_app.api.MovieService.API_KEY;
 import static com.levanb.movies_app.repository.datatype.Mapper.transform;
 
-public class MovieRepository {
+public class MovieRepository implements NetworkStateListener {
     private MovieDatabase database;
     private MovieService service;
     private MutableLiveData<List<Movie>> popularMovies;
@@ -35,6 +36,7 @@ public class MovieRepository {
         this.service = service;
     }
 
+    @Override
     public void onNetworkStateChanged(boolean isConnected) {
         if (!this.isConnected && isConnected) {
             // lazily load data
