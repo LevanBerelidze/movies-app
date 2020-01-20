@@ -41,7 +41,7 @@ public class MovieListActivity extends FragmentActivity {
         if (savedInstanceState == null) {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .add(R.id.frame_layout_container, new MoviePagerFragment())
+                    .add(R.id.layout_container, new MoviePagerFragment())
                     .commit();
         }
     }

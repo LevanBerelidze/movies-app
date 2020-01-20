@@ -99,7 +99,7 @@ public abstract class BaseMovieGridFragment extends Fragment implements MovieLis
         activity.getSupportFragmentManager()
                 .beginTransaction()
                 .addSharedElement(holder.getPoster(), holder.getPoster().getTransitionName())
-                .replace(R.id.frame_layout_container, detailsFragment)
+                .replace(R.id.layout_container, detailsFragment)
                 .addToBackStack(null)
                 .commit();
     }
