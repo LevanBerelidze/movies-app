@@ -21,4 +21,7 @@ public interface FavoriteMovieDao {
 
     @Query("SELECT * FROM favorite_movies")
     LiveData<List<FavoriteMovieEntity>> getAllMovies();
+
+    @Query("SELECT * FROM favorite_movies WHERE id = :id LIMIT 1")
+    LiveData<FavoriteMovieEntity> getFavoriteMovieById(int id);
 }

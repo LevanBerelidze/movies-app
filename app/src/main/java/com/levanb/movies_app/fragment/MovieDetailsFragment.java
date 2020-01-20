@@ -3,6 +3,7 @@ package com.levanb.movies_app.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,9 +17,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
@@ -28,17 +31,18 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.levanb.movies_app.R;
 import com.levanb.movies_app.repository.datatype.Movie;
 import com.levanb.movies_app.viewmodel.MovieListViewModel;
 
 import java.text.DateFormatSymbols;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
 public class MovieDetailsFragment extends Fragment {
     private MovieListViewModel viewModel;
+    private MutableLiveData<Boolean> isFavorite;
 
     public static MovieDetailsFragment newInstance(Movie movie) {
         Bundle args = new Bundle();
@@ -48,6 +52,11 @@ public class MovieDetailsFragment extends Fragment {
         fragment.setArguments(args);
 
         return fragment;
+    }
+
+    public MovieDetailsFragment() {
+        isFavorite = new MutableLiveData<>();
+        isFavorite.postValue(false);
     }
 
     @Override
@@ -75,6 +84,9 @@ public class MovieDetailsFragment extends Fragment {
         assert args != null;
         Movie movie = (Movie) args.getSerializable("movie");
         assert movie != null;
+
+        // listen to favorite status
+        viewModel.getFavoriteMovieById(movie.getId()).observe(this, m -> isFavorite.postValue(m != null));
 
         // initialize views
         ImageView poster = view.findViewById(R.id.image_view_movie_poster);
@@ -136,7 +148,19 @@ public class MovieDetailsFragment extends Fragment {
         ratingBar.setRating((float) movie.getRating());
         ratingTextView.setText(String.format("%.1f", movie.getRating()));
         overview.setText(movie.getOverview());
+
+        // manage favorite status
+        assert isFavorite.getValue() != null; // "false" value is posted in constructor
+        FloatingActionButton favoriteButton = view.findViewById(R.id.fab_favorite);
+        isFavorite.observe(this, value -> {
+            int resId = value ? R.drawable.ic_heart_filled : R.drawable.ic_heart_empty;
+            Drawable fabIcon = ContextCompat.getDrawable(activity, resId);
+            favoriteButton.setImageDrawable(fabIcon);
+        });
+        favoriteButton.setOnClickListener(v -> viewModel.setFavorite(movie, !isFavorite.getValue()));
     }
+
+
 
     private static String formatReleaseDate(Date releaseDate) {
         Calendar calendar = Calendar.getInstance();

@@ -3,7 +3,6 @@ package com.levanb.movies_app.viewmodel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
-
 import com.levanb.movies_app.repository.MovieRepository;
 import com.levanb.movies_app.repository.datatype.Movie;
 
@@ -36,5 +35,9 @@ public class MovieListViewModel extends ViewModel {
 
     public void setFavorite(Movie movie, boolean isFavorite) {
         repository.setFavorite(movie, isFavorite);
+    }
+
+    public LiveData<Movie> getFavoriteMovieById(int id) {
+        return repository.getFavoriteMovieById(id);
     }
 }

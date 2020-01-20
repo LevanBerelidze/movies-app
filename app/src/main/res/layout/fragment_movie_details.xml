@@ -126,10 +126,13 @@
     </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_favorite"
+        android:src="@drawable/ic_heart_empty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_anchor="@id/appbar"
         app:layout_anchorGravity="bottom|right|end"
-        android:layout_margin="16dp" />
+        android:layout_margin="16dp"
+        android:clickable="true"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

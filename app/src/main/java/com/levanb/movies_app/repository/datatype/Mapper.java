@@ -23,6 +23,8 @@ public class Mapper {
     }
 
     public static Movie transform(MovieSchema movieSchema) {
+        if (movieSchema == null)
+            return null;
         Movie movie = new Movie();
         movie.setId(movieSchema.getId());
         movie.setOriginalTitle(movieSchema.getOriginalTitle());
@@ -38,6 +40,8 @@ public class Mapper {
     }
 
     public static Movie transform(FavoriteMovieEntity entity) {
+        if (entity == null)
+            return null;
         Movie movie = new Movie();
         movie.setId(entity.id);
         movie.setOriginalTitle(entity.originalTitle);
@@ -53,6 +57,8 @@ public class Mapper {
     }
 
     public static FavoriteMovieEntity transform(Movie movie) {
+        if (movie == null)
+            return null;
         FavoriteMovieEntity entity = new FavoriteMovieEntity();
         entity.id = movie.getId();
         entity.originalTitle = movie.getOriginalTitle();

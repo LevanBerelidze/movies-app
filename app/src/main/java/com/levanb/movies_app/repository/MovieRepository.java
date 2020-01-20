@@ -95,6 +95,10 @@ public class MovieRepository {
         return favoriteMovies;
     }
 
+    public LiveData<Movie> getFavoriteMovieById(int id) {
+        return Transformations.map(database.favoriteMovieDao().getFavoriteMovieById(id), Mapper::transform);
+    }
+
     public void setFavorite(Movie movie, boolean isFavorite) {
         AsyncTask.execute(() -> {
             if (isFavorite) {
