@@ -87,7 +87,6 @@ public class MovieDetailsFragment extends Fragment {
         viewModel.getFavoriteMovieById(movie.getId()).observe(this, m -> isFavorite.postValue(m != null));
 
         // initialize views
-        ImageView poster = view.findViewById(R.id.image_view_movie_poster);
         TextView title = view.findViewById(R.id.text_view_original_title);
         TextView releaseDate = view.findViewById(R.id.text_view_release_date);
         RatingBar ratingBar = view.findViewById(R.id.rating);
@@ -96,7 +95,7 @@ public class MovieDetailsFragment extends Fragment {
 
         // set name for shared view
         String transitionName = "poster" + movie.getId();
-        ViewCompat.setTransitionName(poster, transitionName);
+        ViewCompat.setTransitionName(view, transitionName);
 
         // initialize toolbar
         final Toolbar toolbar = view.findViewById(R.id.toolbar);
@@ -111,31 +110,7 @@ public class MovieDetailsFragment extends Fragment {
         collapsingToolbar.setTitle(movie.getTitle());
 
         // set poster image
-        String backdropUrl = movie.getBackdropUrl();
-        if (backdropUrl != null) {
-            Glide.with(view.getContext())
-                    .asBitmap()
-                    .load(backdropUrl)
-                    .apply(new RequestOptions().placeholder(R.drawable.image_placeholder))
-                    .listener(new RequestListener<Bitmap>() {
-                        @Override
-                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
-                            Activity parent = getActivity();
-                            assert parent != null;
-                            parent.startPostponedEnterTransition();
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
-                            Activity parent = getActivity();
-                            assert parent != null;
-                            parent.startPostponedEnterTransition();
-                            return false;
-                        }
-                    })
-                    .into(poster);
-        }
+        setBackdropImage(view, movie.getBackdropUrl());
 
         // set details to views
         title.setText(movie.getOriginalTitle());
@@ -158,6 +133,36 @@ public class MovieDetailsFragment extends Fragment {
         favoriteButton.setOnClickListener(v -> {
             viewModel.setFavorite(movie, !isFavorite.getValue());
         });
+    }
+
+    private void setBackdropImage(View contentView, String backdropUrl) {
+        ImageView poster = contentView.findViewById(R.id.image_view_movie_poster);
+        if (backdropUrl != null) {
+            Glide.with(contentView.getContext())
+                    .asBitmap()
+                    .load(backdropUrl)
+                    .apply(new RequestOptions().placeholder(R.drawable.backdrop_placeholder))
+                    .listener(new RequestListener<Bitmap>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
+                            Activity parent = getActivity();
+                            assert parent != null;
+                            parent.startPostponedEnterTransition();
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
+                            Activity parent = getActivity();
+                            assert parent != null;
+                            parent.startPostponedEnterTransition();
+                            return false;
+                        }
+                    })
+                    .into(poster);
+        } else {
+            poster.setImageResource(R.drawable.backdrop_placeholder);
+        }
     }
 
     private static String formatReleaseDate(Date releaseDate) {

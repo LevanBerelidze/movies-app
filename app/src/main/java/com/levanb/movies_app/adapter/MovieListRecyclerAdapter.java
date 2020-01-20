@@ -77,8 +77,10 @@ public class MovieListRecyclerAdapter extends RecyclerView.Adapter<MovieListRecy
             Glide.with(context)
                     .asBitmap()
                     .load(currentMovie.getPosterUrl())
-                    .apply(new RequestOptions().placeholder(R.drawable.image_placeholder))
+                    .apply(new RequestOptions().placeholder(R.drawable.poster_placeholder))
                     .into(holder.poster);
+        } else {
+            holder.poster.setImageResource(R.drawable.poster_placeholder);
         }
 
         // mark favorite, if applicable
