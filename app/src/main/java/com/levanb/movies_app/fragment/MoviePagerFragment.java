@@ -58,6 +58,7 @@ public class MoviePagerFragment extends Fragment
                 snackbar.show();
             } else if (snackbar != null) {
                 snackbar.dismiss();
+                snackbar = null;
             }
         });
     }
