@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -54,11 +53,9 @@ public class MoviePagerFragment extends Fragment
         // handle connection loss
         viewModel.isConnectedToNetwork().observe(this, isConnected -> {
             if (isConnected != null && !isConnected) {
-                snackbar = Snackbar.make(contentView, "Network is not available!", Snackbar.LENGTH_INDEFINITE);
-                snackbar.show();
-            } else if (snackbar != null) {
-                snackbar.dismiss();
-                snackbar = null;
+                displayNetworkErrorSnackbar(contentView);
+            } else {
+                hideNetworkErrorSnackbar();
             }
         });
     }
@@ -76,6 +73,12 @@ public class MoviePagerFragment extends Fragment
             throw new IllegalStateException();
         }
         viewModel = ViewModelProviders.of(activity).get(MovieListViewModel.class);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        hideNetworkErrorSnackbar();
     }
 
     @Override
@@ -117,6 +120,21 @@ public class MoviePagerFragment extends Fragment
         BaseMovieGridFragment fragment = new FavoriteMovieGridFragment();
         fragment.setFavoriteStatusListener(this);
         return fragment;
+    }
+
+    private void displayNetworkErrorSnackbar(View parent) {
+        snackbar = Snackbar.make(parent, "Network is not available!", Snackbar.LENGTH_INDEFINITE);
+        snackbar.setAction("Dismiss", v -> {
+           hideNetworkErrorSnackbar();
+        });
+        snackbar.show();
+    }
+
+    private void hideNetworkErrorSnackbar() {
+        if (snackbar != null) {
+            snackbar.dismiss();
+            snackbar = null;
+        }
     }
 
     @Override
